@@ -1,0 +1,362 @@
+import React, { Fragment } from "react";
+import PropTypes from "prop-types";
+import clsx from "clsx";
+import { lighten, makeStyles } from "@material-ui/core/styles";
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableCell from "@material-ui/core/TableCell";
+import TableHead from "@material-ui/core/TableHead";
+import TablePagination from "@material-ui/core/TablePagination";
+import TableRow from "@material-ui/core/TableRow";
+import TableSortLabel from "@material-ui/core/TableSortLabel";
+import Toolbar from "@material-ui/core/Toolbar";
+import Typography from "@material-ui/core/Typography";
+import Paper from "@material-ui/core/Paper";
+import styled from "styled-components";
+import PartlyCloudyIcon from "../../assets/svgs/PartlyCloudyIcon";
+import CloudyIcon from "../../assets/svgs/CloudyIcon";
+import RainyIcon from "../../assets/svgs/RainyIcon";
+import SunnyIcon from "../../assets/svgs/SunnyIcon";
+import SnowIcon from "../../assets/svgs/SnowIcon";
+
+const StyledWords = styled.div`
+  text-transform: capitalize;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+`;
+
+const descriptionsToIcons = des => {
+  switch (des) {
+    case "Clouds":
+      return <CloudyIcon />;
+    case "Rain":
+      return <RainyIcon />;
+    case "Clear":
+      return <SunnyIcon />;
+    case "Snow":
+      return <SnowIcon />;
+    case "Thunder":
+      return <div>Thunder</div>;
+    default:
+      return <PartlyCloudyIcon />;
+  }
+};
+
+function desc(a, b, orderBy) {
+  if (b[orderBy] < a[orderBy]) {
+    return -1;
+  }
+  if (b[orderBy] > a[orderBy]) {
+    return 1;
+  }
+  return 0;
+}
+
+function stableSort(array, cmp) {
+  const stabilizedThis = array.map((el, index) => [el, index]);
+  stabilizedThis.sort((a, b) => {
+    const order = cmp(a[0], b[0]);
+    if (order !== 0) return order;
+    return a[1] - b[1];
+  });
+  return stabilizedThis.map(el => el[0]);
+}
+
+function getSorting(order, orderBy) {
+  return order === "desc"
+    ? (a, b) => desc(a, b, orderBy)
+    : (a, b) => -desc(a, b, orderBy);
+}
+
+const headCells = [
+  {
+    id: "dt_txt",
+    numeric: false,
+    disablePadding: true,
+    label: "Date & time (Military)"
+  },
+  {
+    id: "temp_min",
+    numeric: false,
+    disablePadding: false,
+    label: "Min. Temp"
+  },
+  {
+    id: "temp_max",
+    numeric: false,
+    disablePadding: false,
+    label: "Max Temp"
+  },
+  {
+    id: "description",
+    numeric: false,
+    disablePadding: false,
+    label: "Description"
+  }
+];
+
+const EnhancedTableHead = ({ classes, order, orderBy, onRequestSort }) => {
+  const createSortHandler = property => event => {
+    onRequestSort(event, property);
+  };
+
+  return (
+    <TableHead>
+      <TableRow>
+        {headCells.map(headCell => {
+          return (
+            <TableCell
+              key={headCell.id}
+              align={headCell.numeric ? "right" : "left"}
+              padding={headCell.disablePadding ? "none" : "none"}
+              sortDirection={orderBy === headCell.id ? order : false}
+            >
+              <TableSortLabel
+                active={orderBy === headCell.id}
+                direction={order}
+                onClick={createSortHandler("dt_txt")}
+                hideSortIcon={headCell.id !== "dt_txt"}
+              >
+                {headCell.label}
+                {orderBy === headCell.id ? (
+                  <span className={classes.visuallyHidden}>
+                    {order === "desc"
+                      ? "sorted descending"
+                      : "sorted ascending"}
+                  </span>
+                ) : null}
+              </TableSortLabel>
+            </TableCell>
+          );
+        })}
+      </TableRow>
+    </TableHead>
+  );
+};
+
+EnhancedTableHead.propTypes = {
+  classes: PropTypes.object.isRequired,
+  onRequestSort: PropTypes.func.isRequired,
+  order: PropTypes.oneOf(["asc", "desc"]).isRequired,
+  orderBy: PropTypes.string.isRequired,
+  rowCount: PropTypes.number.isRequired
+};
+
+const useToolbarStyles = makeStyles(theme => ({
+  root: {
+    paddingLeft: theme.spacing(2),
+    paddingRight: theme.spacing(1)
+  },
+  highlight:
+    theme.palette.type === "light"
+      ? {
+          color: theme.palette.secondary.main,
+          backgroundColor: lighten(theme.palette.secondary.light, 0.85)
+        }
+      : {
+          color: theme.palette.text.primary,
+          backgroundColor: theme.palette.secondary.dark
+        },
+  spacer: {
+    flex: "1 1 100%"
+  },
+  actions: {
+    color: theme.palette.text.secondary
+  },
+  title: {
+    flex: "0 0 auto"
+  }
+}));
+
+const EnhancedTableToolbar = ({ city }) => {
+  const classes = useToolbarStyles();
+  return (
+    <Toolbar className={clsx(classes.root)}>
+      <div className={classes.title}>
+        <Typography variant="h6" id="tableTitle">
+          <StyledWords>{city}</StyledWords>
+        </Typography>
+      </div>
+      <div className={classes.spacer} />
+    </Toolbar>
+  );
+};
+
+const useStyles = makeStyles(theme => ({
+  root: {
+    width: "100%",
+    marginTop: theme.spacing(3)
+  },
+  paper: {
+    width: "100%",
+    marginBottom: theme.spacing(2)
+  },
+  table: {
+    minWidth: 200
+    // width: '100%'
+  },
+  tableWrapper: {
+    overflowX: "auto"
+  },
+  visuallyHidden: {
+    border: 0,
+    clip: "rect(0 0 0 0)",
+    height: 1,
+    margin: -1,
+    overflow: "hidden",
+    padding: 0,
+    position: "absolute",
+    top: 20,
+    width: 1
+  }
+}));
+
+const convert = time => {
+  // Months array
+  let monthsArr = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec"
+  ];
+
+  // Convert timestamp to milliseconds
+  let date = new Date(time * 1000);
+  let year = date.getFullYear();
+  let month = monthsArr[date.getMonth()];
+  let day = date.getDate();
+  let hours = date.getHours();
+  let minutes = `0${date.getMinutes()}`;
+  // Display date time in MM-dd-yyyy h:m: format
+  let convertedTime = `${month} ${day}, ${year} ${hours}:${minutes.substr(-2)}`;
+  return convertedTime;
+};
+
+const EnhancedTable = ({ rows, city }) => {
+  const classes = useStyles();
+  const [order, setOrder] = React.useState("asc");
+  const [orderBy, setOrderBy] = React.useState("");
+  const [page, setPage] = React.useState(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+
+  const handleRequestSort = (event, property) => {
+    console.log("handle prop", property);
+    const isDesc = orderBy === property && order === "desc";
+    setOrder(isDesc ? "asc" : "desc");
+    setOrderBy(property);
+  };
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = event => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
+  };
+
+  const emptyRows = () => {
+    if (rows.length > 0) {
+      return (
+        rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage)
+      );
+    }
+  };
+
+  return (
+    <>
+      {rows !== null && (
+        <div className={classes.root}>
+          <Paper className={classes.paper}>
+            <EnhancedTableToolbar city={city} />
+            <div className={classes.tableWrapper}>
+              <Table
+                className={classes.table}
+                aria-labelledby="tableTitle"
+                size="medium"
+              >
+                <EnhancedTableHead
+                  key={rows.main}
+                  classes={classes}
+                  order={order}
+                  orderBy={orderBy}
+                  onRequestSort={handleRequestSort}
+                  rowCount={rows !== null ? rows.length : 0}
+                />
+                <TableBody>
+                  {stableSort(rows, getSorting(order, orderBy))
+                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .map((row, index) => {
+                      const labelId = `enhanced-table-checkbox-${index}`;
+
+                      return (
+                        <TableRow hover tabIndex={-1} key={row.dt}>
+                          <TableCell
+                            component="th"
+                            id={labelId}
+                            scope="row"
+                            padding="none"
+                          >
+                            {row.dt !== undefined && (
+                              <div>{convert(row.dt)}</div>
+                            )}
+                          </TableCell>
+                          {row.main !== undefined && (
+                            <Fragment>
+                              <TableCell align="left">
+                                {row.main.temp_min.toFixed(0)}&#176;
+                              </TableCell>
+                              <TableCell align="left">
+                                {row.main.temp_max.toFixed(0)}&#176;
+                              </TableCell>
+                              <TableCell align="left">
+                                {descriptionsToIcons(row.weather[0].main)}
+                                <StyledWords>
+                                  {row.weather[0].description}
+                                </StyledWords>
+                              </TableCell>
+                            </Fragment>
+                          )}
+                        </TableRow>
+                      );
+                    })}
+                  {emptyRows() > 0 && (
+                    <TableRow style={{ height: 49 * emptyRows }}>
+                      <TableCell colSpan={6} />
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </div>
+            <TablePagination
+              rowsPerPageOptions={[5, 10, 25]}
+              component="div"
+              count={rows.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              backIconButtonProps={{
+                "aria-label": "previous page"
+              }}
+              nextIconButtonProps={{
+                "aria-label": "next page"
+              }}
+              onChangePage={handleChangePage}
+              onChangeRowsPerPage={handleChangeRowsPerPage}
+            />
+          </Paper>
+        </div>
+      )}
+    </>
+  );
+};
+
+export default EnhancedTable;
