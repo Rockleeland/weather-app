@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 
 const StyledSVG = styled.svg`
+  /* display: flex; */
   @keyframes am-weather-cloud-1 {
     0% {
       -webkit-transform: translate(-5px, 0px);
@@ -467,7 +468,7 @@ const StyledSVG = styled.svg`
 
 const SunnyIcon = () => {
   return (
-    <StyledSVG xmlns="http://www.w3.org/2000/svg" width="64" height="64">
+    <StyledSVG xmlns="http://www.w3.org/2000/svg" width="65" height="65">
       <defs>
         <filter id="a" width="200%" height="200%">
           <feGaussianBlur in="SourceAlpha" stdDeviation="3" />

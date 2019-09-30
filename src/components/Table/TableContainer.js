@@ -1,7 +1,6 @@
 import React, { Fragment } from "react";
 import PropTypes from "prop-types";
-import clsx from "clsx";
-import { lighten, makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
@@ -9,7 +8,6 @@ import TableHead from "@material-ui/core/TableHead";
 import TablePagination from "@material-ui/core/TablePagination";
 import TableRow from "@material-ui/core/TableRow";
 import TableSortLabel from "@material-ui/core/TableSortLabel";
-import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
 import styled from "styled-components";
@@ -18,12 +16,21 @@ import CloudyIcon from "../../assets/svgs/CloudyIcon";
 import RainyIcon from "../../assets/svgs/RainyIcon";
 import SunnyIcon from "../../assets/svgs/SunnyIcon";
 import SnowIcon from "../../assets/svgs/SnowIcon";
+import { stableSort, getSorting } from "../../utils/functions";
 
-const StyledWords = styled.div`
+const StyledWords = styled.span`
   text-transform: capitalize;
   display: flex;
-  justify-content: flex-start;
+  justify-content: ${props => (props.center ? "center" : "flex-start")};
   align-items: center;
+  text-align: center;
+  padding-top: ${props => (props.margin ? ".5em;" : "0")};
+`;
+
+const StyledTable = styled(Table)`
+  .MuiTableCell-root {
+    padding: 0;
+  }
 `;
 
 const descriptionsToIcons = des => {
@@ -43,32 +50,6 @@ const descriptionsToIcons = des => {
   }
 };
 
-function desc(a, b, orderBy) {
-  if (b[orderBy] < a[orderBy]) {
-    return -1;
-  }
-  if (b[orderBy] > a[orderBy]) {
-    return 1;
-  }
-  return 0;
-}
-
-function stableSort(array, cmp) {
-  const stabilizedThis = array.map((el, index) => [el, index]);
-  stabilizedThis.sort((a, b) => {
-    const order = cmp(a[0], b[0]);
-    if (order !== 0) return order;
-    return a[1] - b[1];
-  });
-  return stabilizedThis.map(el => el[0]);
-}
-
-function getSorting(order, orderBy) {
-  return order === "desc"
-    ? (a, b) => desc(a, b, orderBy)
-    : (a, b) => -desc(a, b, orderBy);
-}
-
 const headCells = [
   {
     id: "dt_txt",
@@ -79,25 +60,28 @@ const headCells = [
   {
     id: "temp_min",
     numeric: false,
-    disablePadding: false,
+    disablePadding: true,
     label: "Min. Temp"
   },
   {
     id: "temp_max",
     numeric: false,
-    disablePadding: false,
+    disablePadding: true,
     label: "Max Temp"
   },
   {
     id: "description",
     numeric: false,
-    disablePadding: false,
+    disablePadding: true,
     label: "Description"
   }
 ];
 
 const EnhancedTableHead = ({ classes, order, orderBy, onRequestSort }) => {
   const createSortHandler = property => event => {
+    if (property !== "dt_txt") {
+      return;
+    }
     onRequestSort(event, property);
   };
 
@@ -115,7 +99,12 @@ const EnhancedTableHead = ({ classes, order, orderBy, onRequestSort }) => {
               <TableSortLabel
                 active={orderBy === headCell.id}
                 direction={order}
-                onClick={createSortHandler("dt_txt")}
+                disabled={headCell.id !== "dt_txt"}
+                onClick={
+                  headCell.id === "dt_txt"
+                    ? createSortHandler("dt_txt")
+                    : createSortHandler()
+                }
                 hideSortIcon={headCell.id !== "dt_txt"}
               >
                 {headCell.label}
@@ -143,43 +132,15 @@ EnhancedTableHead.propTypes = {
   rowCount: PropTypes.number.isRequired
 };
 
-const useToolbarStyles = makeStyles(theme => ({
-  root: {
-    paddingLeft: theme.spacing(2),
-    paddingRight: theme.spacing(1)
-  },
-  highlight:
-    theme.palette.type === "light"
-      ? {
-          color: theme.palette.secondary.main,
-          backgroundColor: lighten(theme.palette.secondary.light, 0.85)
-        }
-      : {
-          color: theme.palette.text.primary,
-          backgroundColor: theme.palette.secondary.dark
-        },
-  spacer: {
-    flex: "1 1 100%"
-  },
-  actions: {
-    color: theme.palette.text.secondary
-  },
-  title: {
-    flex: "0 0 auto"
-  }
-}));
-
 const EnhancedTableToolbar = ({ city }) => {
-  const classes = useToolbarStyles();
   return (
-    <Toolbar className={clsx(classes.root)}>
-      <div className={classes.title}>
-        <Typography variant="h6" id="tableTitle">
-          <StyledWords>{city}</StyledWords>
-        </Typography>
-      </div>
-      <div className={classes.spacer} />
-    </Toolbar>
+    <>
+      <Typography variant="h6" id="tableTitle">
+        <StyledWords center margin>
+          {city}
+        </StyledWords>
+      </Typography>
+    </>
   );
 };
 
@@ -249,7 +210,6 @@ const EnhancedTable = ({ rows, city }) => {
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
   const handleRequestSort = (event, property) => {
-    console.log("handle prop", property);
     const isDesc = orderBy === property && order === "desc";
     setOrder(isDesc ? "asc" : "desc");
     setOrderBy(property);
@@ -279,7 +239,7 @@ const EnhancedTable = ({ rows, city }) => {
           <Paper className={classes.paper}>
             <EnhancedTableToolbar city={city} />
             <div className={classes.tableWrapper}>
-              <Table
+              <StyledTable
                 className={classes.table}
                 aria-labelledby="tableTitle"
                 size="medium"
@@ -319,9 +279,9 @@ const EnhancedTable = ({ rows, city }) => {
                                 {row.main.temp_max.toFixed(0)}&#176;
                               </TableCell>
                               <TableCell align="left">
-                                {descriptionsToIcons(row.weather[0].main)}
                                 <StyledWords>
                                   {row.weather[0].description}
+                                  {descriptionsToIcons(row.weather[0].main)}
                                 </StyledWords>
                               </TableCell>
                             </Fragment>
@@ -335,7 +295,7 @@ const EnhancedTable = ({ rows, city }) => {
                     </TableRow>
                   )}
                 </TableBody>
-              </Table>
+              </StyledTable>
             </div>
             <TablePagination
               rowsPerPageOptions={[5, 10, 25]}

@@ -171,7 +171,7 @@ const StyledSVG = styled.svg`
 
 const SnowIcon = () => {
   return (
-    <StyledSVG xmlns="http://www.w3.org/2000/svg" width="64" height="64">
+    <StyledSVG xmlns="http://www.w3.org/2000/svg" width="65" height="65">
       <defs>
         <filter id="a" width="200%" height="200%">
           <feGaussianBlur in="SourceAlpha" stdDeviation="3" />

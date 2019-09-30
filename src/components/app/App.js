@@ -4,6 +4,7 @@ import Title from "../Title";
 import Form from "../Form";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import styled from "styled-components";
+import axios from "axios";
 
 const APIKEY = process.env.REACT_APP_WEATHER_API_KEY;
 
@@ -15,38 +16,53 @@ const StyledContainer = styled.div`
 
 const StyledNotFound = styled.div`
   display: flex;
-  margin-top: 50%;
+  margin-top: 25%;
+  justify-content: center;
+
+  @media (max-width: 768px) {
+    width: 50%;
+  }
 `;
 
 function App() {
   const [data, setData] = useState(null);
   const [city, setCity] = useState();
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(false);
 
   const getWeather = async e => {
+    e.preventDefault();
+    const city = e.target.elements.city.value;
+    setCity(city);
     try {
-      e.preventDefault();
-      const city = e.target.elements.city.value;
       setIsLoading(true);
-      const apiCall = await fetch(
-        `http://api.openweathermap.org/data/2.5/forecast?q=${city}&units=imperial&appid=${APIKEY}`
-      );
-      const response = await apiCall.json();
-      if (response.cod !== 200) {
+      setError(false);
+      const url = `http://api.openweathermap.org/data/2.5/forecast?q=${city}&units=imperial&appid=${APIKEY}`;
+      const response = await axios.get(url);
+      console.log("response", response);
+      if (response.data !== 200) {
         setIsLoading(false);
       }
-      setCity(city);
-      setData(response.list);
+
+      setData(response.data.list);
       setIsLoading(false);
     } catch (error) {
-      throw error;
+      console.error(error);
+      setData(null);
+      setIsLoading(false);
+      setError(true);
     }
-    setIsLoading(false);
   };
+
   return (
     <StyledContainer>
       <Title />
       <Form loadWeather={getWeather} />
+      {error && (
+        <StyledNotFound>
+          Sorry, we couldn't find any results for {city}. Please Search again.
+        </StyledNotFound>
+      )}
       {isLoading ? (
         <StyledNotFound>
           <CircularProgress />

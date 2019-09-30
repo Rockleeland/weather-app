@@ -1,8 +1,21 @@
 import React from "react";
-const Title = props => {
+import styled from "styled-components";
+import WeatherIcon from "../../assets/svgs/WeatherIcon";
+
+const StyledTitle = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  margin-top: 2em;
+`;
+
+const Title = () => {
   return (
     <div>
-      <h1>Weather </h1>
+      <StyledTitle>
+        Weather <WeatherIcon />
+      </StyledTitle>
     </div>
   );
 };
