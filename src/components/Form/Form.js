@@ -2,7 +2,6 @@ import React from "react";
 import TextField from "@material-ui/core/TextField";
 import Grid from "@material-ui/core/Grid";
 import SearchIcon from "@material-ui/icons/Search";
-import Button from "@material-ui/core/Button";
 import styled from "styled-components";
 import { withStyles, makeStyles } from "@material-ui/core/styles";
 
@@ -10,19 +9,9 @@ const StyledForm = styled.form`
   display: flex;
   justify-content: center;
   max-width: 300px;
-  /* cursor: "pointer"; */
 `;
 
-// const StyledButton = styled(Button)`
-//   && {
-//     border: 1px solid #ffa500;
-//     color: #ffa500;
-//     border-color: #ffa500;
-//     cursor: "pointer";
-//   }
-// `;
-
-const CssTextField = withStyles({
+export const CssTextField = withStyles({
   root: {
     "& label.Mui-focused": {
       color: "#FFA500"
@@ -70,7 +59,6 @@ const Form = ({ loadWeather }) => {
           />
         </Grid>
       </Grid>
-      {/* <StyledButton variant="outlined">Search</StyledButton> */}
     </StyledForm>
   );
 };

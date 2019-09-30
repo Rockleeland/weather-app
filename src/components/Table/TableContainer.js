@@ -11,12 +11,11 @@ import TableSortLabel from "@material-ui/core/TableSortLabel";
 import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
 import styled from "styled-components";
-import PartlyCloudyIcon from "../../assets/svgs/PartlyCloudyIcon";
-import CloudyIcon from "../../assets/svgs/CloudyIcon";
-import RainyIcon from "../../assets/svgs/RainyIcon";
-import SunnyIcon from "../../assets/svgs/SunnyIcon";
-import SnowIcon from "../../assets/svgs/SnowIcon";
-import { stableSort, getSorting } from "../../utils/functions";
+import {
+  stableSort,
+  getSorting,
+  descriptionsToIcons
+} from "../../utils/functions";
 
 const StyledWords = styled.span`
   text-transform: capitalize;
@@ -32,23 +31,6 @@ const StyledTable = styled(Table)`
     padding: 0;
   }
 `;
-
-const descriptionsToIcons = des => {
-  switch (des) {
-    case "Clouds":
-      return <CloudyIcon />;
-    case "Rain":
-      return <RainyIcon />;
-    case "Clear":
-      return <SunnyIcon />;
-    case "Snow":
-      return <SnowIcon />;
-    case "Thunder":
-      return <div>Thunder</div>;
-    default:
-      return <PartlyCloudyIcon />;
-  }
-};
 
 const headCells = [
   {
