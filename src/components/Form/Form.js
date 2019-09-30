@@ -10,17 +10,17 @@ const StyledForm = styled.form`
   display: flex;
   justify-content: center;
   max-width: 300px;
-  cursor: "pointer";
+  /* cursor: "pointer"; */
 `;
 
-const StyledButton = styled(Button)`
-  && {
-    border: 1px solid #ffa500;
-    color: #ffa500;
-    border-color: #ffa500;
-    cursor: "pointer";
-  }
-`;
+// const StyledButton = styled(Button)`
+//   && {
+//     border: 1px solid #ffa500;
+//     color: #ffa500;
+//     border-color: #ffa500;
+//     cursor: "pointer";
+//   }
+// `;
 
 const CssTextField = withStyles({
   root: {
@@ -70,7 +70,7 @@ const Form = ({ loadWeather }) => {
           />
         </Grid>
       </Grid>
-      <StyledButton variant="outlined">Search</StyledButton>
+      {/* <StyledButton variant="outlined">Search</StyledButton> */}
     </StyledForm>
   );
 };
