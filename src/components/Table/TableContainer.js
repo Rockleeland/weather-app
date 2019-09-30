@@ -24,7 +24,7 @@ const StyledWords = styled.span`
   align-items: center;
   text-align: start;
   padding-top: ${props => (props.margin ? ".5em;" : "0")};
-  max-width: ${props => (props.center ? "100%" : "200px")};
+  max-width: ${props => (props.center ? "100%" : "140px")};
 `;
 
 const StyledTable = styled(Table)`

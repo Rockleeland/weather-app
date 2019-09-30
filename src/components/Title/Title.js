@@ -13,7 +13,7 @@ const Title = () => {
   return (
     <div>
       <StyledTitle>
-        Weather <WeatherIcon />
+        <WeatherIcon /> Weather
       </StyledTitle>
     </div>
   );
