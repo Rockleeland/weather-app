@@ -18,10 +18,17 @@ const StyledNotFound = styled.div`
   display: flex;
   margin-top: 25%;
   justify-content: center;
+  text-align: center;
 
   @media (max-width: 768px) {
     width: 50%;
   }
+`;
+
+const StyledSearchBarContainer = styled.div`
+  display: flex;
+  flex-direction: ${props => (props.top ? "row" : "column")};
+  margin-top: ${props => (props.top ? "1em" : "5em")};
 `;
 
 const WeatherApp = () => {
@@ -55,8 +62,10 @@ const WeatherApp = () => {
 
   return (
     <StyledContainer>
-      <Title />
-      <Form loadWeather={getWeather} />
+      <StyledSearchBarContainer top={data !== null}>
+        <Title />
+        <Form loadWeather={getWeather} />
+      </StyledSearchBarContainer>
       {error && (
         <StyledNotFound>
           Sorry, we couldn't find any results for {city}. Please Search again.

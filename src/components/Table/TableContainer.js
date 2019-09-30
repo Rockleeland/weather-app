@@ -22,8 +22,9 @@ const StyledWords = styled.span`
   display: flex;
   justify-content: ${props => (props.center ? "center" : "flex-start")};
   align-items: center;
-  text-align: center;
+  text-align: start;
   padding-top: ${props => (props.margin ? ".5em;" : "0")};
+  max-width: ${props => (props.center ? "100%" : "200px")};
 `;
 
 const StyledTable = styled(Table)`
