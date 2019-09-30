@@ -10,6 +10,7 @@ const StyledForm = styled.form`
   display: flex;
   justify-content: center;
   max-width: 300px;
+  cursor: "pointer";
 `;
 
 const StyledButton = styled(Button)`
