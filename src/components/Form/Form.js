@@ -17,6 +17,7 @@ const StyledButton = styled(Button)`
     border: 1px solid #ffa500;
     color: #ffa500;
     border-color: #ffa500;
+    cursor: pointer;
   }
 `;
 
