@@ -37,7 +37,7 @@ function App() {
     try {
       setIsLoading(true);
       setError(false);
-      const url = `http://api.openweathermap.org/data/2.5/forecast?q=${city}&units=imperial&appid=${APIKEY}`;
+      const url = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&units=imperial&appid=${APIKEY}`;
       const response = await axios.get(url);
       console.log("response", response);
       if (response.data !== 200) {
