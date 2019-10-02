@@ -10,7 +10,6 @@ const StyledTitle = styled.div`
 `;
 
 const Title = ({ title }) => {
-  console.log("title", title);
   return (
     <div>
       <StyledTitle>

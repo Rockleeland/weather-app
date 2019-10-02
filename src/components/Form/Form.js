@@ -59,18 +59,6 @@ const StyledButton = styled(Button)`
     &:hover {
       background-color: #3b78e7;
     }
-    /* @media screen and (max-width: 500px) {
-      display: flex;
-      border-radius: 0 20px 20px 0;
-      padding-left: 8px;
-      padding-right: 8px;
-      background-color: #3b78e7;
-      border: 1px solid #3b78e7;
-      flex: 0 0 auto;
-      &:hover {
-        background-color: #3b78e7;
-      }
-    } */
   }
 `;
 
