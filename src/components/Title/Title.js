@@ -9,11 +9,12 @@ const StyledTitle = styled.div`
   text-align: center;
 `;
 
-const Title = () => {
+const Title = ({ title }) => {
+  console.log("title", title);
   return (
     <div>
       <StyledTitle>
-        <WeatherIcon /> Weather
+        <WeatherIcon /> {title && "Weather"}
       </StyledTitle>
     </div>
   );

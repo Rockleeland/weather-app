@@ -59,11 +59,11 @@ const WeatherApp = () => {
       setError(true);
     }
   };
-
+  console.log("data", data);
   return (
     <StyledContainer>
       <StyledSearchBarContainer top={data !== null}>
-        <Title />
+        <Title title={data === undefined || data === null} />
         <Form loadWeather={getWeather} />
       </StyledSearchBarContainer>
       {error && (

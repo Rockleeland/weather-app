@@ -4,6 +4,7 @@ import Grid from "@material-ui/core/Grid";
 import SearchIcon from "@material-ui/icons/Search";
 import styled from "styled-components";
 import Button from "@material-ui/core/Button";
+import InputAdornment from "@material-ui/core/InputAdornment";
 
 import { withStyles, makeStyles } from "@material-ui/core/styles";
 
@@ -17,20 +18,20 @@ const StyledForm = styled.form`
 export const CssTextField = withStyles({
   root: {
     "& label.Mui-focused": {
-      color: "#FFA500"
+      color: "#3b78e7"
     },
     "& .MuiInput-underline:after": {
-      borderBottomColor: "#FFA500"
+      borderBottomColor: "#3b78e7"
     },
     "& .MuiOutlinedInput-root": {
       "& fieldset": {
-        borderColor: "#FFA500"
+        borderColor: "#3b78e7"
       },
       "&:hover fieldset": {
-        borderColor: "#FFA500"
+        borderColor: "#3b78e7"
       },
       "&.Mui-focused fieldset": {
-        borderColor: "#FFA500"
+        borderColor: "#3b78e7"
       }
     }
   }
@@ -44,9 +45,32 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const StyledButton = styled(Button)`
-  max-height: 80px;
-  @media screen and (max-width: 500px) {
-    display: none !important;
+  && {
+    color: white;
+    max-height: 80px;
+    display: flex;
+    border-radius: 0 20px 20px 0;
+    padding-left: 8px;
+    padding-right: 8px;
+    background-color: #3b78e7;
+    border: 1px solid #3b78e7;
+    flex: 0 0 auto;
+
+    &:hover {
+      background-color: #3b78e7;
+    }
+    /* @media screen and (max-width: 500px) {
+      display: flex;
+      border-radius: 0 20px 20px 0;
+      padding-left: 8px;
+      padding-right: 8px;
+      background-color: #3b78e7;
+      border: 1px solid #3b78e7;
+      flex: 0 0 auto;
+      &:hover {
+        background-color: #3b78e7;
+      }
+    } */
   }
 `;
 
@@ -57,15 +81,19 @@ const Form = ({ loadWeather }) => {
     <StyledForm onSubmit={loadWeather}>
       <Grid container spacing={1} alignItems="flex-end">
         <Grid item>
-          <SearchIcon />
-        </Grid>
-        <Grid item>
           <CssTextField
             className={classes.margin}
             type="text"
             name="city"
             id="input-with-icon-grid"
             label="City"
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon />
+                </InputAdornment>
+              )
+            }}
           />
         </Grid>
       </Grid>
