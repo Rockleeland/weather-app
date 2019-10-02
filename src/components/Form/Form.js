@@ -3,11 +3,14 @@ import TextField from "@material-ui/core/TextField";
 import Grid from "@material-ui/core/Grid";
 import SearchIcon from "@material-ui/icons/Search";
 import styled from "styled-components";
+import Button from "@material-ui/core/Button";
+
 import { withStyles, makeStyles } from "@material-ui/core/styles";
 
 const StyledForm = styled.form`
   display: flex;
   justify-content: center;
+  align-items: flex-end;
   max-width: 300px;
 `;
 
@@ -40,6 +43,13 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
+const StyledButton = styled(Button)`
+  max-height: 80px;
+  @media screen and (max-width: 500px) {
+    display: none !important;
+  }
+`;
+
 const Form = ({ loadWeather }) => {
   const classes = useStyles();
 
@@ -59,6 +69,14 @@ const Form = ({ loadWeather }) => {
           />
         </Grid>
       </Grid>
+      <StyledButton
+        type="submit"
+        size="medium"
+        variant="contained"
+        onSubmit={loadWeather}
+      >
+        Search
+      </StyledButton>
     </StyledForm>
   );
 };
