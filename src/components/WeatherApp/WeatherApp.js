@@ -59,7 +59,6 @@ const WeatherApp = () => {
       setError(true);
     }
   };
-  console.log("data", data);
   return (
     <StyledContainer>
       <StyledSearchBarContainer top={data !== null}>
